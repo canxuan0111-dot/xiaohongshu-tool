@@ -161,28 +161,71 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            gap: 20px;
         }
         .result-box.hidden { display: none; }
 
-        .result-title { 
-            font-weight: 600; 
-            margin-bottom: 12px; 
-            font-size: 15px;
+        .result-section {
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+        }
+        
+        .result-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .result-section-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .copy-section-btn {
+            background: #1d1d1f;
+            color: #f5f5f7;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            width: auto;
+            margin: 0;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+        
+        .copy-section-btn:hover {
+            background: #000;
+            transform: none;
+        }
+        
+        .result-content {
+            white-space: pre-wrap;
             color: #1d1d1f;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        #title-output {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        
+        #body-output {
+            max-height: 400px;
+            overflow-y: auto;
         }
 
-        #output { 
-            white-space: pre-wrap;
-            background: #fafafa;
+        .result-title { 
+            font-weight: 600; 
+            margin-bottom: 16px; 
+            font-size: 16px;
             color: #1d1d1f;
-            padding: 24px; 
-            border-radius: 12px; 
-            line-height: 1.8; 
-            font-size: 15px;
-            border: 1px solid #e0e0e0;
-            flex: 1;
-            overflow-y: auto;
-            max-height: 600px;
         }
         
         /* 占位提示 */
@@ -235,22 +278,6 @@
             color: #999;
         }
 
-        /* 复制按钮 */
-        .copy-btn {
-            background: #1d1d1f;
-            color: #f5f5f7;
-            padding: 10px 18px;
-            font-size: 13px;
-            font-weight: 500;
-            width: auto;
-            margin-top: 12px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .copy-btn:hover {
-            background: #000000;
-        }
 
         /* 响应式 */
         @media (max-width: 968px) {
@@ -309,8 +336,24 @@
         <div class="right-panel">
             <div class="result-box hidden" id="resultBox">
                 <div class="result-title">生成结果：</div>
-                <div id="output"></div>
-                <button onclick="copyText()" class="copy-btn">📑 复制文案</button>
+                
+                <!-- 标题区域 -->
+                <div class="result-section">
+                    <div class="result-section-header">
+                        <span class="result-section-title">📌 笔记标题</span>
+                        <button onclick="copyTitle()" class="copy-section-btn">复制标题</button>
+                    </div>
+                    <div id="title-output" class="result-content"></div>
+                </div>
+                
+                <!-- 正文及标签区域 -->
+                <div class="result-section">
+                    <div class="result-section-header">
+                        <span class="result-section-title">📝 正文及标签</span>
+                        <button onclick="copyBody()" class="copy-section-btn">复制正文</button>
+                    </div>
+                    <div id="body-output" class="result-content"></div>
+                </div>
             </div>
             <div class="result-placeholder" id="placeholder">
                 <div class="placeholder-icon">📝</div>
@@ -327,7 +370,8 @@
         const sellingPoint = document.getElementById('selling_point').value.trim();
         const offer = document.getElementById('offer').value.trim() || "暂无额外促销";
         const btn = document.getElementById('btn');
-        const output = document.getElementById('output');
+        const titleOutput = document.getElementById('title-output');
+        const bodyOutput = document.getElementById('body-output');
         const resultBox = document.getElementById('resultBox');
         const placeholder = document.getElementById('placeholder');
 
@@ -343,8 +387,8 @@
         
         // 显示结果框：隐藏占位符，显示loading
         placeholder.innerHTML = '<div class="placeholder-icon"><div class="loading-spinner"></div></div><div class="placeholder-text">正在生成中...</div><div class="placeholder-subtext">AI正在为您创作爆款笔记，请稍候...</div>';
+        placeholder.style.display = "flex";
         resultBox.classList.add("hidden");
-        output.innerText = "正在分析痛点...正在组织语言...请稍候...";
 
         try {
             // 向自己的后端 API 发请求（不暴露 Key）
@@ -366,19 +410,29 @@
             if(data.answer) {
                 placeholder.style.display = "none";
                 resultBox.classList.remove("hidden");
-                output.innerText = data.answer;
+                
+                // 解析标题和正文
+                const content = data.answer.trim();
+                const lines = content.split('\n');
+                const title = lines[0]; // 第一行是标题
+                const body = lines.slice(1).join('\n').trim(); // 其余是正文和标签
+                
+                titleOutput.innerText = title;
+                bodyOutput.innerText = body;
             } else {
                 // 如果API报错
                 placeholder.style.display = "none";
                 resultBox.classList.remove("hidden");
-                output.innerText = "出错了：" + (data.message || data.error || "未知错误");
+                titleOutput.innerText = "生成失败";
+                bodyOutput.innerText = "出错了：" + (data.message || data.error || "未知错误");
             }
 
         } catch (error) {
             // 网络报错
             placeholder.style.display = "none";
             resultBox.classList.remove("hidden");
-            output.innerText = "网络请求失败，请检查网络连接。" + error;
+            titleOutput.innerText = "网络错误";
+            bodyOutput.innerText = "网络请求失败，请检查网络连接。" + error;
         } finally {
             // 无论成功失败，恢复按钮状态
             btn.disabled = false;
@@ -386,13 +440,23 @@
         }
     }
 
-    // 复制功能
-    function copyText() {
-        const textToCopy = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert("复制成功！快去发小红书吧~");
+    // 复制标题
+    function copyTitle() {
+        const text = document.getElementById('title-output').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("标题复制成功！");
         }).catch(err => {
-            alert("复制失败，请手动长按复制");
+            alert("复制失败，请手动复制");
+        });
+    }
+
+    // 复制正文及标签
+    function copyBody() {
+        const text = document.getElementById('body-output').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("正文复制成功！快去发小红书吧~");
+        }).catch(err => {
+            alert("复制失败，请手动复制");
         });
     }
 </script>
