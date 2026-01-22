@@ -1,21 +1,10 @@
 {
-  "builds": [
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "public",
+  "rewrites": [
     {
-      "src": "api/app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "env": {
-    "DIFY_API_KEY": "@dify_api_key"
-  },
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "api/app.py"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }

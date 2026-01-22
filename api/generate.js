@@ -5,30 +5,42 @@ export default async function handler(req, res) {
 
   const { productName, sellingPoint, offer } = req.body;
 
-  // 这里的 KEY 是存在服务器环境变量里的，很安全
-  const API_KEY = process.env.DIFY_API_KEY; 
+  // 从环境变量获取 API KEY
+  const API_KEY = process.env.DIFY_API_KEY;
+
+  // 构造提示词
+  let prompt = `商品名称：${productName}\n核心卖点：${sellingPoint}`;
+  if (offer && offer.trim()) {
+    prompt += `\n促销/赠品信息：${offer}`;
+  } else {
+    prompt += `\n促销/赠品信息：无（请在CTA环节自由发挥通用促销话术）`;
+  }
 
   try {
-    const response = await fetch('https://api.dify.ai/v1/completion-messages', {
+    const response = await fetch('https://api.dify.ai/v1/chat-messages', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + API_KEY,
+        'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        inputs: {
-          "product_name": productName,
-          "selling_point": sellingPoint,
-          "offer": offer
-        },
+        inputs: {},
+        query: prompt,
         response_mode: "blocking",
-        user: "web-user"
+        conversation_id: "",
+        user: "merchant_user_1"
       })
     });
 
     const data = await response.json();
-    res.status(200).json(data);
+    
+    if (data.answer) {
+      res.status(200).json({ status: 'success', content: data.answer });
+    } else {
+      res.status(200).json({ status: 'error', message: data.message || '生成失败' });
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('API 调用出错:', error);
+    res.status(500).json({ status: 'error', message: '服务器内部错误' });
   }
 }
