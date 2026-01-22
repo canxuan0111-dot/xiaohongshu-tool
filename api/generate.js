@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://api.dify.ai/v1/completion-messages', {
+    const response = await fetch('https://api.dify.ai/v1/chat-messages', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
@@ -29,6 +29,7 @@ export default async function handler(req, res) {
           selling_point: sellingPoint,
           offer: offer || "无特殊促销"
         },
+        query: "",
         response_mode: "blocking",
         user: "merchant_user_1"
       })
