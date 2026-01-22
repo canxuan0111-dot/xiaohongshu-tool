@@ -21,6 +21,7 @@ export default async function handler(req, res) {
           "selling_point": sellingPoint || "",
           "offer": offer || "无特殊促销"
         },
+        query: "请生成小红书笔记",
         response_mode: "blocking",
         user: "merchant_user_1"
       })
