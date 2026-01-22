@@ -19,7 +19,7 @@
         .container { 
             background: white; 
             width: 100%; 
-            max-width: 600px; /* 手机上看也不会太宽 */
+            max-width: 1200px; 
             padding: 30px; 
             border-radius: 16px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
@@ -30,12 +30,22 @@
         h1 { 
             text-align: center; 
             color: #333; 
-            margin-bottom: 30px; 
+            margin-bottom: 24px; 
             font-size: 24px;
         }
         h1 span {
             color: #ff2442; /* 小红书红 */
         }
+
+        /* 两列布局 */
+        .content-wrapper { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 28px; 
+            align-items: start; 
+        }
+        .left-panel { display: flex; flex-direction: column; }
+        .right-panel { display: flex; flex-direction: column; position: sticky; top: 20px; }
         
         /* 表单样式 */
         .form-group { margin-bottom: 20px; }
@@ -90,25 +100,36 @@
 
         /* 结果区域样式 */
         .result-box { 
-            margin-top: 30px; 
-            border-top: 1px solid #eee; 
-            padding-top: 20px; 
-            display: none; /* 默认隐藏，有结果才显示 */
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
         }
+        .result-box.hidden { display: none; }
         .result-title { 
             font-weight: bold; 
             margin-bottom: 12px; 
             font-size: 16px;
         }
         #output { 
-            white-space: pre-wrap; /* 保留换行符 */
-            background: #fff0f2; /* 淡淡的红色背景 */
+            white-space: pre-wrap; 
+            background: #fff0f2; 
             color: #333;
             padding: 20px; 
             border-radius: 12px; 
             border: 1px solid #ffdde2; 
             line-height: 1.8; 
             font-size: 15px;
+            flex: 1; 
+            overflow-y: auto; 
+            max-height: 600px; 
+        }
+
+        /* 占位提示 */
+        .result-placeholder {
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 300px; padding: 40px; text-align: center; 
+            background: #fff0f2; border: 1px dashed #ffdde2; border-radius: 12px; 
+            color: #a33; 
         }
         
         /* 复制按钮 */
@@ -121,8 +142,13 @@
             margin-top: 10px;
             box-shadow: none;
         }
-        .copy-btn:hover {
-            background-color: #000;
+        .copy-btn:hover { background-color: #000; }
+
+        /* 响应式堆叠 */
+        @media (max-width: 968px) {
+            .content-wrapper { grid-template-columns: 1fr; }
+            .right-panel { position: static; }
+            #output { max-height: 400px; }
         }
     </style>
 </head>
@@ -130,28 +156,38 @@
 
 <div class="container">
     <h1>📝 小红书<span>爆文生成器</span></h1>
-    
-    <div class="form-group">
-        <label>1. 商品名称</label>
-        <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
-    </div>
+    <div class="content-wrapper">
+        <!-- 左侧：输入表单 -->
+        <div class="left-panel">
+            <div class="form-group">
+                <label>1. 商品名称</label>
+                <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
+            </div>
 
-    <div class="form-group">
-        <label>2. 核心卖点 (突出优势)</label>
-        <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
-    </div>
+            <div class="form-group">
+                <label>2. 核心卖点 (突出优势)</label>
+                <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
+            </div>
 
-    <div class="form-group">
-        <label>3. 促销/赠品信息 (可选)</label>
-        <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
-    </div>
+            <div class="form-group">
+                <label>3. 促销/赠品信息 (可选)</label>
+                <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
+            </div>
 
-    <button onclick="generateText()" id="btn">✨ 立即生成笔记</button>
+            <button onclick="generateText()" id="btn">✨ 立即生成笔记</button>
+        </div>
 
-    <div class="result-box" id="resultBox">
-        <div class="result-title">生成结果：</div>
-        <div id="output"></div>
-        <button onclick="copyText()" class="copy-btn">📑 复制文案</button>
+        <!-- 右侧：生成结果 -->
+        <div class="right-panel">
+            <div class="result-box hidden" id="resultBox">
+                <div class="result-title">生成结果：</div>
+                <div id="output"></div>
+                <button onclick="copyText()" class="copy-btn">📑 复制文案</button>
+            </div>
+            <div class="result-placeholder" id="placeholder">
+                填写左侧信息后<br>点击生成按钮<br>结果将显示在这里 ✨
+            </div>
+        </div>
     </div>
 </div>
 
@@ -167,6 +203,7 @@
         const btn = document.getElementById('btn');
         const output = document.getElementById('output');
         const resultBox = document.getElementById('resultBox');
+        const placeholder = document.getElementById('placeholder');
 
         // 简单校验
         if(!productName || !sellingPoint) {
@@ -178,8 +215,9 @@
         btn.disabled = true;
         btn.innerText = "🤖 AI 正在疯狂创作中(约10秒)...";
         
-        // 显示结果框，先给个提示
-        resultBox.style.display = "block";
+        // 显示结果框：隐藏占位符
+        placeholder.style.display = "none";
+        resultBox.classList.remove('hidden');
         output.innerText = "正在分析痛点...正在组织语言...请稍候...";
 
         try {
