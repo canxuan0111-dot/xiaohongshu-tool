@@ -8,21 +8,17 @@
         /* 页面整体样式 */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-            background-color: #f5f5f7; 
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             padding: 20px; 
             display: flex; 
             justify-content: center; 
             min-height: 100vh;
         }
         
-        /* 中间卡片样式 */
+        /* 主容器 */
         .container { 
-            background: white; 
             width: 100%; 
-            max-width: 1200px; 
-            padding: 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            max-width: 1300px; 
             height: fit-content;
         }
 
@@ -31,37 +27,68 @@
             text-align: center; 
             color: #333; 
             margin-bottom: 24px; 
-            font-size: 24px;
+            font-size: 32px;
+            font-weight: 600;
         }
         h1 span {
-            color: #ff2442; /* 小红书红 */
+            background: linear-gradient(135deg, #ff2442 0%, #9c27b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* 两列布局 */
         .content-wrapper { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 28px; 
+            gap: 32px; 
             align-items: start; 
         }
-        .left-panel { display: flex; flex-direction: column; }
-        .right-panel { display: flex; flex-direction: column; position: sticky; top: 20px; }
+        .left-panel { 
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        .right-panel { 
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            position: sticky;
+            top: 20px;
+            min-height: 500px;
+        }
         
         /* 表单样式 */
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 24px; }
         label { 
             display: block; 
             font-weight: 600; 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
             color: #444; 
             font-size: 14px;
         }
         
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            font-size: 18px;
+            color: #86868b;
+            pointer-events: none;
+        }
+        
         input[type="text"] { 
             width: 100%; 
-            padding: 14px; 
+            padding: 14px 16px 14px 48px; 
             border: 1px solid #e0e0e0; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             box-sizing: border-box; 
             font-size: 15px; 
             transition: border 0.2s;
@@ -76,23 +103,24 @@
         /* 按钮样式 */
         button { 
             width: 100%; 
-            background-color: #ff2442; 
+            background: linear-gradient(135deg, #2196f3 0%, #9c27b0 100%);
             color: white; 
             padding: 16px; 
             border: none; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             font-size: 16px; 
-            font-weight: bold; 
+            font-weight: 600; 
             cursor: pointer; 
-            transition: all 0.2s; 
-            box-shadow: 0 4px 15px rgba(255, 36, 66, 0.3);
+            transition: all 0.3s; 
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            margin-top: 12px;
         }
         button:hover { 
-            background-color: #e0203a; 
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
         }
         button:disabled { 
-            background-color: #ccc; 
+            background: #ccc; 
             cursor: not-allowed; 
             transform: none;
             box-shadow: none;
@@ -112,11 +140,11 @@
         }
         #output { 
             white-space: pre-wrap; 
-            background: #fff0f2; 
+            background: #fafafa; 
             color: #333;
-            padding: 20px; 
+            padding: 24px; 
             border-radius: 12px; 
-            border: 1px solid #ffdde2; 
+            border: 1px solid #e0e0e0; 
             line-height: 1.8; 
             font-size: 15px;
             flex: 1; 
@@ -126,10 +154,50 @@
 
         /* 占位提示 */
         .result-placeholder {
-            display: flex; align-items: flex-start; justify-content: center; 
-            min-height: 300px; padding: 40px; padding-top: 60px; text-align: center; 
-            background: #fff0f2; border: 1px dashed #ffdde2; border-radius: 12px; 
-            color: #a33; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 400px; 
+            text-align: center; 
+            color: #666; 
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        
+        .placeholder-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            background: #f5f5f7;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .placeholder-icon::before {
+            content: '';
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .placeholder-text {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .placeholder-subtext {
+            font-size: 13px;
+            color: #999;
         }
         
         /* 复制按钮 */
@@ -161,17 +229,26 @@
         <div class="left-panel">
             <div class="form-group">
                 <label>1. 商品名称</label>
-                <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
+                <div class="input-wrapper">
+                    <span class="input-icon">🛍️</span>
+                    <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
+                </div>
             </div>
 
             <div class="form-group">
                 <label>2. 核心卖点 (突出优势)</label>
-                <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
+                <div class="input-wrapper">
+                    <span class="input-icon">🖊️</span>
+                    <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
+                </div>
             </div>
 
             <div class="form-group">
-                <label>3. 促销/赠品信息 (可选)</label>
-                <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
+                <label>促销/赠品信息 (可选)</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🏷️</span>
+                    <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
+                </div>
             </div>
 
             <button onclick="generateText()" id="btn">✨ 立即生成笔记</button>
@@ -185,7 +262,9 @@
                 <button onclick="copyText()" class="copy-btn">📑 复制文案</button>
             </div>
             <div class="result-placeholder" id="placeholder">
-                填写左侧信息后<br>点击生成按钮<br>结果将显示在这里 ✨
+                <div class="placeholder-icon"></div>
+                <div class="placeholder-text">准备好您的爆款笔记！</div>
+                <div class="placeholder-subtext">点击左侧按钮后，精彩内容将在此呈现，<br>支持一键复制到剪贴板。✨</div>
             </div>
         </div>
     </div>

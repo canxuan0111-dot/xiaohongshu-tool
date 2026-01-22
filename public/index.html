@@ -14,7 +14,7 @@
 
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif; 
-            background: #f5f5f7;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             padding: 40px 20px; 
             display: flex; 
             justify-content: center; 
@@ -23,14 +23,10 @@
             -moz-osx-font-smoothing: grayscale;
         }
         
-        /* 卡片容器 */
+        /* 主容器 */
         .container { 
-            background: #ffffff;
             width: 100%; 
-            max-width: 1200px;
-            padding: 48px; 
-            border-radius: 18px; 
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            max-width: 1300px;
             height: fit-content;
         }
 
@@ -39,47 +35,78 @@
             text-align: center; 
             color: #1d1d1f; 
             margin-bottom: 8px; 
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 600;
             letter-spacing: -0.5px;
         }
         
         h1 span {
-            color: #ff2442;
+            background: linear-gradient(135deg, #ff2442 0%, #9c27b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         /* 两列布局 */
         .content-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 32px;
             align-items: start;
         }
 
-        .left-panel { display: flex; flex-direction: column; }
-        .right-panel { display: flex; flex-direction: column; position: sticky; top: 20px; }
+        .left-panel { 
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        
+        .right-panel { 
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            position: sticky;
+            top: 20px;
+            min-height: 500px;
+        }
 
         /* 表单组 */
         .form-group { 
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         label { 
             display: block; 
-            font-weight: 500; 
-            margin-bottom: 8px; 
+            font-weight: 600; 
+            margin-bottom: 10px; 
             color: #1d1d1f; 
-            font-size: 13px;
+            font-size: 14px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            font-size: 18px;
+            color: #86868b;
+            pointer-events: none;
         }
         
         input[type="text"] { 
             width: 100%; 
-            padding: 12px 16px; 
-            border: 1px solid #d2d2d7;
-            border-radius: 10px; 
+            padding: 14px 16px 14px 48px; 
+            border: 1px solid #e0e0e0;
+            border-radius: 12px; 
             font-size: 15px; 
             transition: all 0.2s ease;
-            background: #ffffff;
+            background: #fafafa;
             color: #1d1d1f;
             appearance: none;
             -webkit-appearance: none;
@@ -98,31 +125,35 @@
         /* 按钮 */
         button { 
             width: 100%; 
-            background: #007aff;
+            background: linear-gradient(135deg, #2196f3 0%, #9c27b0 100%);
             color: #ffffff; 
-            padding: 14px; 
+            padding: 16px; 
             border: none; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            font-weight: 500; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
             cursor: pointer; 
-            transition: all 0.2s ease;
-            margin-top: 8px;
+            transition: all 0.3s ease;
+            margin-top: 12px;
             letter-spacing: -0.2px;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
         
         button:hover { 
-            background: #0051d5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
         }
         
         button:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
         
         button:disabled { 
             background: #d2d2d7;
             color: #86868b;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         /* 结果区域 */
@@ -142,13 +173,13 @@
 
         #output { 
             white-space: pre-wrap;
-            background: #f5f5f7;
+            background: #fafafa;
             color: #1d1d1f;
-            padding: 20px; 
-            border-radius: 10px; 
-            line-height: 1.6; 
-            font-size: 14px;
-            border: 1px solid #d2d2d7;
+            padding: 24px; 
+            border-radius: 12px; 
+            line-height: 1.8; 
+            font-size: 15px;
+            border: 1px solid #e0e0e0;
             flex: 1;
             overflow-y: auto;
             max-height: 600px;
@@ -157,18 +188,51 @@
         /* 占位提示 */
         .result-placeholder {
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
             height: 100%;
-            min-height: 300px;
-            background: #f5f5f7;
-            border-radius: 10px;
-            border: 1px dashed #d2d2d7;
-            color: #86868b;
-            font-size: 14px;
+            min-height: 400px;
             text-align: center;
-            padding: 40px;
-            padding-top: 60px;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        
+        .placeholder-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            background: #f5f5f7;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .placeholder-icon::before {
+            content: '';
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .placeholder-text {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .placeholder-subtext {
+            font-size: 13px;
+            color: #999;
         }
 
         /* 复制按钮 */
@@ -217,17 +281,26 @@
         <div class="left-panel">
             <div class="form-group">
                 <label>1. 商品名称</label>
-                <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
+                <div class="input-wrapper">
+                    <span class="input-icon">🛍️</span>
+                    <input type="text" id="product_name" placeholder="例如：SK-II神仙水">
+                </div>
             </div>
 
             <div class="form-group">
                 <label>2. 核心卖点 (突出优势)</label>
-                <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
+                <div class="input-wrapper">
+                    <span class="input-icon">🖊️</span>
+                    <input type="text" id="selling_point" placeholder="例如：平衡水油、去闭口神器">
+                </div>
             </div>
 
             <div class="form-group">
-                <label>3. 促销/赠品信息 (可选)</label>
-                <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
+                <label>促销/赠品信息 (可选)</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🏷️</span>
+                    <input type="text" id="offer" placeholder="例如: 买一送一，包邮">
+                </div>
             </div>
 
             <button onclick="generateText()" id="btn">✨ 立即生成笔记</button>
@@ -240,7 +313,9 @@
                 <button onclick="copyText()" class="copy-btn">📑 复制文案</button>
             </div>
             <div class="result-placeholder" id="placeholder">
-                填写左侧信息后<br>点击生成按钮<br>结果将显示在这里 ✨
+                <div class="placeholder-icon"></div>
+                <div class="placeholder-text">准备好您的爆款笔记！</div>
+                <div class="placeholder-subtext">点击左侧按钮后，精彩内容将在此呈现，<br>支持一键复制到剪贴板。✨</div>
             </div>
         </div>
     </div>
