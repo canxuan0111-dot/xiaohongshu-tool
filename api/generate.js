@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const API_KEY = process.env.DIFY_API_KEY;
 
   try {
-    const response = await fetch('https://api.dify.ai/v1/chat-messages', {
+    const response = await fetch('https://api.dify.ai/v1/completion-messages', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
@@ -17,11 +17,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         inputs: {
-          product_name: productName || "",
-          selling_point: sellingPoint || "",
-          offer: offer || "无特殊促销"
+          "product_name": productName || "",
+          "selling_point": sellingPoint || "",
+          "offer": offer || "无特殊促销"
         },
-        query: "",
         response_mode: "blocking",
         user: "merchant_user_1"
       })
@@ -32,7 +31,7 @@ export default async function handler(req, res) {
     if (data.answer) {
       res.status(200).json({ status: 'success', content: data.answer });
     } else {
-      console.error('Dify 返回错误:', data);
+      console.error('Dify 返回错误:', JSON.stringify(data));
       res.status(200).json({ status: 'error', message: data.message || JSON.stringify(data) });
     }
   } catch (error) {
