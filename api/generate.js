@@ -17,17 +17,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://api.dify.ai/v1/chat-messages', {
+    const response = await fetch('https://api.dify.ai/v1/completion-messages', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        inputs: {},
-        query: prompt,
+        inputs: {
+          "product_name": productName,
+          "selling_point": sellingPoint,
+          "offer": offer || "无"
+        },
         response_mode: "blocking",
-        conversation_id: "",
         user: "merchant_user_1"
       })
     });
@@ -37,10 +39,11 @@ export default async function handler(req, res) {
     if (data.answer) {
       res.status(200).json({ status: 'success', content: data.answer });
     } else {
-      res.status(200).json({ status: 'error', message: data.message || '生成失败' });
+      console.error('Dify 返回错误:', data);
+      res.status(200).json({ status: 'error', message: data.message || '生成失败，请检查 Dify 配置' });
     }
   } catch (error) {
     console.error('API 调用出错:', error);
-    res.status(500).json({ status: 'error', message: '服务器内部错误' });
+    res.status(500).json({ status: 'error', message: '服务器内部错误，请稍后重试' });
   }
 }
