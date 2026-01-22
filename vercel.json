@@ -5,7 +5,14 @@
       "use": "@vercel/python"
     }
   ],
+  "env": {
+    "DIFY_API_KEY": "@dify_api_key"
+  },
   "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/public/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "api/app.py"
