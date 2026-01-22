@@ -9,6 +9,11 @@ export default async function handler(req, res) {
   const API_KEY = process.env.DIFY_API_KEY;
 
   try {
+    // 确保所有值都不为空
+    const finalProductName = productName && productName.trim() ? productName.trim() : "未指定商品";
+    const finalSellingPoint = sellingPoint && sellingPoint.trim() ? sellingPoint.trim() : "未指定卖点";
+    const finalOffer = offer && offer.trim() ? offer.trim() : "无特殊促销";
+
     const response = await fetch('https://api.dify.ai/v1/completion-messages', {
       method: 'POST',
       headers: {
@@ -17,9 +22,9 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         inputs: {
-          product_name: productName,
-          selling_point: sellingPoint,
-          offer: offer || "无特殊促销"
+          product_name: finalProductName,
+          selling_point: finalSellingPoint,
+          offer: finalOffer
         },
         query: "请生成小红书笔记",
         response_mode: "blocking",
