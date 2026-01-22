@@ -25,9 +25,9 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         inputs: {
-          "商品名称": productName,
-          "核心卖点": sellingPoint,
-          "促销/赠品信息": offer || ""
+          "product_name": productName,
+          "selling_point": sellingPoint,
+          "offer": offer || ""
         },
         response_mode: "blocking",
         user: "merchant_user_1"
@@ -40,10 +40,10 @@ export default async function handler(req, res) {
       res.status(200).json({ status: 'success', content: data.answer });
     } else {
       console.error('Dify 返回错误:', data);
-      res.status(200).json({ status: 'error', message: data.message || '生成失败，请检查 Dify 配置' });
+      res.status(200).json({ status: 'error', message: data.message || '生成失败' });
     }
   } catch (error) {
     console.error('API 调用出错:', error);
-    res.status(500).json({ status: 'error', message: '服务器内部错误，请稍后重试' });
+    res.status(500).json({ status: 'error', message: '服务器内部错误' });
   }
 }
