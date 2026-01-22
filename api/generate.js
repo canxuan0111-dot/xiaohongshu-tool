@@ -25,9 +25,9 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         inputs: {
-          "product_name": productName,
-          "selling_point": sellingPoint,
-          "offer": offer || "无"
+          "商品名称": productName,
+          "核心卖点": sellingPoint,
+          "促销/赠品信息": offer || ""
         },
         response_mode: "blocking",
         user: "merchant_user_1"
