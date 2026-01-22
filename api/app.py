@@ -3,12 +3,15 @@ import requests
 import json
 import os
 
-app = Flask(__name__, template_folder='../templates', static_folder='../public')
+# 获取项目根目录
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+app = Flask(__name__, 
+            template_folder=os.path.join(BASE_DIR, 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'public'))
 
 # ================= 配置区 =================
-# 从环境变量读取 API Key（Vercel 会注入）
 DIFY_API_KEY = os.environ.get('DIFY_API_KEY', 'app-GWeMiYKLDM2vxSSgXYLuXn5B')
-# Dify API 的 URL
 DIFY_API_URL = 'https://api.dify.ai/v1/chat-messages'
 # ==========================================
 
@@ -72,4 +75,4 @@ def generate_note():
         return jsonify({'status': 'error', 'message': '服务器内部错误，请查看后台日志。'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
